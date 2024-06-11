@@ -7,7 +7,7 @@ export default defineConfig({
     starlight({
       title: "Конспект",
       social: {
-        github: "https://github.com/withastro/starlight",
+        github: "https://github.com/ParzivalEugene/misis-cpp",
       },
       locales: {
         root: {
