@@ -5,9 +5,15 @@ import starlight from "@astrojs/starlight";
 export default defineConfig({
   integrations: [
     starlight({
-      title: "My Docs",
+      title: "Конспект",
       social: {
         github: "https://github.com/withastro/starlight",
+      },
+      locales: {
+        root: {
+          label: "Русский",
+          lang: "ru",
+        },
       },
       sidebar: [
         {
