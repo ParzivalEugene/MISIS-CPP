@@ -1,0 +1,117 @@
+---
+title: std::bitset
+description: Все про std::bitset
+sidebar:
+  order: 10
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { LinkCard } from '@astrojs/starlight/components';
+
+<Aside>
+`std::bitset` — это контейнер в C++ стандартной библиотеки, который представляет фиксированное количество битов и предоставляет удобные методы для их манипуляции. Он используется для хранения последовательностей битов и выполнения битовых операций.
+</Aside>
+
+## Основные идеи `std::bitset`
+
+`std::bitset` полезен для представления и работы с битовыми масками, флагами и другими подобными структурами. Он предоставляет удобные методы для установки, очистки, инверсии и получения значений битов.
+
+### Объявление и инициализация
+
+`std::bitset` объявляется с указанием количества битов. Вот несколько способов инициализации:
+
+```cpp
+#include <bitset>
+#include <iostream>
+
+int main() {
+    std::bitset<8> b1; // Все биты обнулены (00000000)
+    std::bitset<8> b2(42); // Инициализация числом (00101010)
+    std::bitset<8> b3("1100"); // Инициализация строкой (00001100)
+
+    std::cout << "b1: " << b1 << std::endl;
+    std::cout << "b2: " << b2 << std::endl;
+    std::cout << "b3: " << b3 << std::endl;
+
+    return 0;
+}
+```
+
+### Основные методы
+
+`std::bitset` предоставляет множество методов для работы с битами:
+
+#### Установка и очистка битов
+
+- `set()`: Устанавливает все биты в 1.
+- `set(size_t pos, bool value = true)`: Устанавливает бит на позиции `pos` в значение `value`.
+- `reset()`: Устанавливает все биты в 0.
+- `reset(size_t pos)`: Устанавливает бит на позиции `pos` в 0.
+- `flip()`: Инвертирует все биты.
+- `flip(size_t pos)`: Инвертирует бит на позиции `pos`.
+
+#### Получение значений битов
+
+- `test(size_t pos)`: Возвращает значение бита на позиции `pos`.
+- `all()`: Проверяет, установлены ли все биты.
+- `any()`: Проверяет, установлен ли хотя бы один бит.
+- `none()`: Проверяет, не установлены ли все биты.
+- `count()`: Возвращает количество установленных битов.
+
+#### Пример использования методов
+
+```cpp
+#include <bitset>
+#include <iostream>
+
+int main() {
+    std::bitset<8> b("10101010");
+
+    b.set(0); // 10101011
+    b.reset(1); // 10101001
+    b.flip(2); // 10101101
+    bool bit = b.test(3); // true
+
+    std::cout << "Bitset: " << b << std::endl;
+    std::cout << "Bit at position 3: " << bit << std::endl;
+    std::cout << "All bits set: " << b.all() << std::endl;
+    std::cout << "Any bit set: " << b.any() << std::endl;
+    std::cout << "No bits set: " << b.none() << std::endl;
+    std::cout << "Number of set bits: " << b.count() << std::endl;
+
+    return 0;
+}
+```
+
+### Побитовые операции
+
+`std::bitset` поддерживает стандартные побитовые операции: AND (`&`), OR (`|`), XOR (`^`), сдвиги влево (`<<`) и вправо (`>>`).
+
+```cpp
+#include <bitset>
+#include <iostream>
+
+int main() {
+    std::bitset<8> b1("1100");
+    std::bitset<8> b2("1010");
+
+    std::bitset<8> b_and = b1 & b2; // 1000
+    std::bitset<8> b_or = b1 | b2; // 1110
+    std::bitset<8> b_xor = b1 ^ b2; // 0110
+    std::bitset<8> b_left_shift = b1 << 2; // 00001100
+    std::bitset<8> b_right_shift = b1 >> 2; // 0011
+
+    std::cout << "b1 AND b2: " << b_and << std::endl;
+    std::cout << "b1 OR b2: " << b_or << std::endl;
+    std::cout << "b1 XOR b2: " << b_xor << std::endl;
+    std::cout << "b1 left shift: " << b_left_shift << std::endl;
+    std::cout << "b1 right shift: " << b_right_shift << std::endl;
+
+    return 0;
+}
+```
+
+## Заключение
+
+`std::bitset` в C++ — это мощный инструмент для работы с фиксированными последовательностями битов. Он предоставляет методы для установки, очистки, инверсии и получения значений битов, а также поддерживает побитовые операции. `std::bitset` полезен для управления битовыми масками, флагами и другими подобными структурами, обеспечивая удобный и эффективный интерфейс.
+

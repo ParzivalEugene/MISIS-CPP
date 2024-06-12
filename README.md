@@ -9,7 +9,7 @@
 - [x] RAII
 - [x] ref-qualifiers for *this
 - [x] Singleton
-- [ ] std::bitset
+- [x] std::bitset
 - [ ] std::forward
 - [ ] std::move
 - [ ] std::shared_ptr
