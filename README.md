@@ -7,7 +7,7 @@
 - [x] ABI
 - [x] PIMPL
 - [x] RAII
-- [ ] ref-qualifiers for *this
+- [x] ref-qualifiers for *this
 - [x] Singleton
 - [ ] std::bitset
 - [ ] std::forward

@@ -1,0 +1,96 @@
+---
+title: ref Qualifiers для *this
+description: Все про ref-qualifiers для *this
+sidebar:
+  order: 9
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { LinkCard } from '@astrojs/starlight/components';
+
+<Aside>
+ref-qualifiers для `*this` — это спецификаторы, которые позволяют ограничить вызов методов класса в зависимости от того, является ли объект, для которого вызывается метод, lvalue или rvalue.
+</Aside>
+
+## Основные идеи ref-qualifiers
+
+ref-qualifiers для `*this` позволяют разработчикам определять методы класса, которые могут быть вызваны только для lvalue или только для rvalue объектов. Это помогает избежать ненужных копирований и улучшить производительность, предоставляя более гибкий и безопасный интерфейс класса.
+
+### ref-qualifiers
+
+- **`&`**: Метод может быть вызван только для lvalue объектов.
+- **`&&`**: Метод может быть вызван только для rvalue объектов.
+
+## Пример использования ref-qualifiers
+
+Рассмотрим класс `Widget`, который использует ref-qualifiers для методов:
+
+```cpp
+#include <iostream>
+
+class Widget {
+public:
+    void display() & {
+        std::cout << "Lvalue display" << std::endl;
+    }
+
+    void display() && {
+        std::cout << "Rvalue display" << std::endl;
+    }
+};
+
+int main() {
+    Widget w;
+
+    w.display();          // Вызывает lvalue версию метода
+    Widget().display();   // Вызывает rvalue версию метода
+
+    return 0;
+}
+```
+
+В этом примере метод `display` перегружен с использованием ref-qualifiers:
+- `display() &`: Этот метод может быть вызван только для lvalue объектов, таких как `w`.
+- `display() &&`: Этот метод может быть вызван только для rvalue объектов, таких как `Widget()`.
+
+## Применение ref-qualifiers для оптимизации
+
+ref-qualifiers можно использовать для оптимизации методов, особенно тех, которые возвращают большие объекты или временные значения:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+class Data {
+public:
+    std::vector<int> getData() & {
+        return data; // Возвращает копию для lvalue объектов
+    }
+
+    std::vector<int> getData() && {
+        return std::move(data); // Возвращает временный объект для rvalue объектов
+    }
+
+private:
+    std::vector<int> data{1, 2, 3, 4, 5};
+};
+
+int main() {
+    Data d1;
+    auto data1 = d1.getData(); // Копирование данных
+
+    Data d2;
+    auto data2 = std::move(d2).getData(); // Перемещение данных
+
+    return 0;
+}
+```
+
+В этом примере:
+- `getData() &`: Возвращает копию `data` для lvalue объектов, чтобы избежать изменения оригинальных данных.
+- `getData() &&`: Возвращает временный объект `data` для rvalue объектов, что позволяет избежать ненужного копирования и улучшить производительность.
+
+## Заключение
+
+ref-qualifiers для `*this` в C++ позволяют ограничивать вызов методов класса в зависимости от того, является ли объект lvalue или rvalue. Это улучшает производительность и безопасность, предоставляя более гибкий интерфейс класса. Использование ref-qualifiers особенно полезно при оптимизации методов, работающих с временными объектами или большими данными.
+
