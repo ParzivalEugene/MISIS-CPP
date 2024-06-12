@@ -4,7 +4,7 @@
 
 ## Прогресс
 
-- [ ] ABI
+- [x] ABI
 - [ ] PIMPL
 - [ ] RAII
 - [ ] ref-qualifiers for *this

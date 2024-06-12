@@ -17,7 +17,7 @@ export default defineConfig({
       },
       sidebar: [
         {
-          label: "Вопросы",
+          label: "Темы",
           autogenerate: { directory: "questions" },
         },
       ],
