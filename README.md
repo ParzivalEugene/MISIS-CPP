@@ -5,7 +5,7 @@
 ## Прогресс
 
 - [x] ABI
-- [ ] PIMPL
+- [x] PIMPL
 - [ ] RAII
 - [ ] ref-qualifiers for *this
 - [ ] Singleton
