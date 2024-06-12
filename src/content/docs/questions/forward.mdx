@@ -1,0 +1,89 @@
+---
+title: std::forward
+description: Все про std::forward
+sidebar:
+  order: 10
+---
+
+import { Tab, Tabs } from '@astrojs/starlight/components'
+
+
+## Введение
+`std::forward` - это функция из стандартной библиотеки C++, которая помогает осуществлять безопасное и эффективное перенаправление аргументов к другой функции. Эта функция особенно полезна в контексте шаблонов и перфектного форвардинга (perfect forwarding).
+
+## Определение и назначение
+
+`std::forward` оборачивает объект и передает его как rvalue или lvalue, в зависимости от его исходного состояния. Это достигается путем использования шаблонного параметра типа, который определяет, как должен быть передан объект - как rvalue или lvalue.
+
+## Синтаксис
+```cpp
+template <class T>
+T&& forward(std::remove_reference_t<T>& t) noexcept;
+```
+- **T**: Тип аргумента, который будет передан.
+- **t**: Ссылка на объект, который необходимо передать.
+
+## Примеры использования
+
+### Пример 1: Перфектный форвардинг
+```cpp
+#include <iostream>
+#include <utility>
+
+void overloaded(int& x) { std::cout << "lvalue" << std::endl; }
+void overloaded(int&& x) { std::cout << "rvalue" << std::endl; }
+
+template <typename T>
+void forwarding(T&& arg) {
+    overloaded(std::forward<T>(arg));
+}
+
+int main() {
+    int a = 10;
+    forwarding(a);        // вывод: lvalue
+    forwarding(10);       // вывод: rvalue
+    forwarding(std::move(a)); // вывод: rvalue
+}
+```
+В этом примере функция `forwarding` принимает универсальную ссылку `T&& arg` и использует `std::forward` для передачи аргумента в `overloaded`. В зависимости от типа переданного аргумента (lvalue или rvalue), `std::forward` гарантирует правильную перегрузку функции `overloaded`.
+
+### Пример 2: Перемещение аргументов
+```cpp
+#include <iostream>
+#include <string>
+#include <utility>
+
+class MyClass {
+public:
+    MyClass(const std::string& name) : name(name) {
+        std::cout << "Copy constructor" << std::endl;
+    }
+
+    MyClass(std::string&& name) : name(std::move(name)) {
+        std::cout << "Move constructor" << std::endl;
+    }
+
+private:
+    std::string name;
+};
+
+template <typename T>
+MyClass create(T&& name) {
+    return MyClass(std::forward<T>(name));
+}
+
+int main() {
+    std::string str = "example";
+    MyClass a = create(str);        // вывод: Copy constructor
+    MyClass b = create("example");  // вывод: Move constructor
+}
+```
+В данном примере `create` использует `std::forward` для передачи аргумента в конструктор `MyClass`, что позволяет использовать либо копирование, либо перемещение, в зависимости от типа передаваемого аргумента.
+
+## Резюме
+- `std::forward` используется для сохранения типа и значения переданного аргумента.
+- Основное применение - перфектный форвардинг в шаблонных функциях.
+- Гарантирует правильное перенаправление lvalue и rvalue ссылок.
+
+Использование `std::forward` помогает избежать избыточных копирований и обеспечивает более эффективное использование ресурсов, что особенно важно в высокопроизводительных приложениях.
+

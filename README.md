@@ -10,7 +10,7 @@
 - [x] ref-qualifiers for *this
 - [x] Singleton
 - [x] std::bitset
-- [ ] std::forward
+- [x] std::forward
 - [ ] std::move
 - [ ] std::shared_ptr
 - [ ] std::unique_ptr
