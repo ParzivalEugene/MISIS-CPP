@@ -11,7 +11,7 @@
 - [x] Singleton
 - [x] std::bitset
 - [x] std::forward
-- [ ] std::move
+- [x] std::move
 - [ ] std::shared_ptr
 - [ ] std::unique_ptr
 - [ ] std::weak_ptr
