@@ -12,9 +12,9 @@
 - [x] std::bitset
 - [x] std::forward
 - [x] std::move
-- [ ] std::shared_ptr
-- [ ] std::unique_ptr
-- [ ] std::weak_ptr
+- [x] std::shared_ptr
+- [x] std::unique_ptr
+- [x] std::weak_ptr
 - [x] абстрактный класс
 - [x] виртуальный вызов, виртуальные функции
 - [x] динамический полиморфизм

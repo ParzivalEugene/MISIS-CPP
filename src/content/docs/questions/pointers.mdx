@@ -1,0 +1,129 @@
+---
+title: Указатели
+description: Все про указатели
+sidebar:
+  order: 12
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components';
+
+## Введение
+Умные указатели в C++ обеспечивают автоматическое управление памятью, устраняя необходимость ручного управления выделением и освобождением памяти. В C++ стандартной библиотекой предоставляются три основных типа умных указателей: `std::shared_ptr`, `std::unique_ptr`, и `std::weak_ptr`.
+
+## `std::shared_ptr`
+
+### Определение и назначение
+`std::shared_ptr` - это умный указатель, который позволяет нескольким объектам совместно владеть одним и тем же ресурсом. Он использует счетчик ссылок для отслеживания количества владельцев ресурса и освобождает ресурс, когда счетчик становится равным нулю.
+
+### Синтаксис
+```cpp
+#include <memory>
+
+std::shared_ptr<Type> ptr = std::make_shared<Type>(args);
+```
+
+### Пример использования
+```cpp
+#include <iostream>
+#include <memory>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "Constructor" << std::endl; }
+    ~MyClass() { std::cout << "Destructor" << std::endl; }
+};
+
+int main() {
+    std::shared_ptr<MyClass> ptr1 = std::make_shared<MyClass>();
+    {
+        std::shared_ptr<MyClass> ptr2 = ptr1;
+        std::cout << "ptr2 reference count: " << ptr2.use_count() << std::endl; // вывод: 2
+    }
+    std::cout << "ptr1 reference count: " << ptr1.use_count() << std::endl; // вывод: 1
+}
+```
+В этом примере два умных указателя `ptr1` и `ptr2` совместно владеют одним объектом типа `MyClass`. Деструктор вызывается только тогда, когда последний `shared_ptr` освобождается.
+
+## `std::unique_ptr`
+
+### Определение и назначение
+`std::unique_ptr` - это умный указатель, который обеспечивает эксклюзивное владение ресурсом. Он не допускает совместного владения и автоматически освобождает ресурс, когда выходит из области видимости.
+
+### Синтаксис
+```cpp
+#include <memory>
+
+std::unique_ptr<Type> ptr = std::make_unique<Type>(args);
+```
+
+### Пример использования
+```cpp
+#include <iostream>
+#include <memory>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "Constructor" << std::endl; }
+    ~MyClass() { std::cout << "Destructor" << std::endl; }
+};
+
+int main() {
+    std::unique_ptr<MyClass> ptr1 = std::make_unique<MyClass>();
+    // std::unique_ptr<MyClass> ptr2 = ptr1; // ошибка компиляции: нельзя скопировать unique_ptr
+    std::unique_ptr<MyClass> ptr2 = std::move(ptr1); // перемещение владения
+
+    if (!ptr1) {
+        std::cout << "ptr1 is null" << std::endl; // вывод: ptr1 is null
+    }
+}
+```
+Здесь `std::unique_ptr` обеспечивает единственное владение объектом. Попытка копирования `unique_ptr` приведет к ошибке компиляции, но перемещение владения допустимо с помощью `std::move`.
+
+## `std::weak_ptr`
+
+### Определение и назначение
+`std::weak_ptr` - это умный указатель, который не участвует в управлении временем жизни объекта. Он используется для решения проблем циклических зависимостей, сохраняя слабую ссылку на объект, который может быть уничтожен в любой момент.
+
+### Синтаксис
+```cpp
+#include <memory>
+
+std::weak_ptr<Type> weakPtr = sharedPtr;
+```
+
+### Пример использования
+```cpp
+#include <iostream>
+#include <memory>
+
+class MyClass {
+public:
+    MyClass() { std::cout << "Constructor" << std::endl; }
+    ~MyClass() { std::cout << "Destructor" << std::endl; }
+};
+
+int main() {
+    std::shared_ptr<MyClass> sharedPtr = std::make_shared<MyClass>();
+    std::weak_ptr<MyClass> weakPtr = sharedPtr;
+
+    if (auto tempPtr = weakPtr.lock()) {
+        std::cout << "Resource is still available" << std::endl; // вывод: Resource is still available
+    }
+
+    sharedPtr.reset(); // уничтожает объект MyClass
+
+    if (auto tempPtr = weakPtr.lock()) {
+        std::cout << "Resource is still available" << std::endl;
+    } else {
+        std::cout << "Resource is no longer available" << std::endl; // вывод: Resource is no longer available
+    }
+}
+```
+В этом примере `std::weak_ptr` не увеличивает счетчик ссылок объекта, позволяя безопасно проверять, существует ли объект, без предотвращения его уничтожения.
+
+## Резюме
+- `std::shared_ptr` обеспечивает совместное владение ресурсом с использованием счетчика ссылок.
+- `std::unique_ptr` обеспечивает эксклюзивное владение ресурсом и автоматическое освобождение памяти.
+- `std::weak_ptr` предоставляет слабую ссылку на объект, не влияя на его время жизни и решая проблемы циклических зависимостей.
+
+Использование умных указателей помогает предотвратить утечки памяти и упрощает управление ресурсами в приложениях C++, делая код более безопасным и эффективным.
