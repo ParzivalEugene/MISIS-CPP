@@ -1,0 +1,116 @@
+---
+title: Singleton
+description: Все про паттерн Singleton
+sidebar:
+  order: 8
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { LinkCard } from '@astrojs/starlight/components';
+
+<Aside>
+Синглтон (Singleton) — это порождающий паттерн проектирования, который обеспечивает создание только одного экземпляра класса и предоставляет глобальную точку доступа к этому экземпляру.
+</Aside>
+
+## Основные идеи паттерна Синглтон
+
+Паттерн Синглтон используется, когда необходимо гарантировать, что у класса есть только один экземпляр, и предоставить к нему глобальную точку доступа. Это может быть полезно, например, для классов, управляющих доступом к ресурсам, таких как база данных или конфигурационные файлы.
+
+### Преимущества Синглтона
+
+- **Гарантия единственности**: Создается только один экземпляр класса.
+- **Глобальная точка доступа**: Экземпляр доступен из любого места программы.
+- **Контроль над инициализацией**: Инициализация экземпляра происходит в момент первого обращения.
+
+### Недостатки Синглтона
+
+- **Ограниченная тестируемость**: Трудно подменять экземпляр Синглтона в тестах.
+- **Глобальное состояние**: Введение глобального состояния может усложнить понимание и отладку программы.
+- **Нарушение принципа единственной ответственности**: Класс управляет как своим поведением, так и своим единственным экземпляром.
+
+## Пример реализации Синглтона в C++
+
+### Шаг 1: Простой Синглтон
+
+Рассмотрим пример простой реализации Синглтона:
+
+```cpp
+#include <iostream>
+
+class Singleton {
+public:
+    static Singleton& getInstance() {
+        static Singleton instance; // Гарантированно создается один экземпляр
+        return instance;
+    }
+
+    void doSomething() {
+        std::cout << "Doing something!" << std::endl;
+    }
+
+private:
+    Singleton() {} // Приватный конструктор
+
+    // Запрещаем копирование и присваивание
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+};
+
+int main() {
+    Singleton& singleton = Singleton::getInstance();
+    singleton.doSomething();
+    return 0;
+}
+```
+
+В этом примере метод `getInstance` возвращает статический экземпляр `Singleton`. Приватный конструктор предотвращает создание дополнительных экземпляров. Копирование и присваивание запрещены с помощью `delete`.
+
+### Шаг 2: Потокобезопасный Синглтон
+
+Для многопоточных приложений важно обеспечить потокобезопасность при создании экземпляра Синглтона:
+
+```cpp
+#include <iostream>
+#include <mutex>
+
+class ThreadSafeSingleton {
+public:
+    static ThreadSafeSingleton& getInstance() {
+        std::call_once(initInstanceFlag, &ThreadSafeSingleton::initSingleton);
+        return *instance;
+    }
+
+    void doSomething() {
+        std::cout << "Doing something in thread-safe singleton!" << std::endl;
+    }
+
+private:
+    ThreadSafeSingleton() {} // Приватный конструктор
+
+    // Запрещаем копирование и присваивание
+    ThreadSafeSingleton(const ThreadSafeSingleton&) = delete;
+    ThreadSafeSingleton& operator=(const ThreadSafeSingleton&) = delete;
+
+    static void initSingleton() {
+        instance = new ThreadSafeSingleton();
+    }
+
+    static ThreadSafeSingleton* instance;
+    static std::once_flag initInstanceFlag;
+};
+
+ThreadSafeSingleton* ThreadSafeSingleton::instance = nullptr;
+std::once_flag ThreadSafeSingleton::initInstanceFlag;
+
+int main() {
+    ThreadSafeSingleton& singleton = ThreadSafeSingleton::getInstance();
+    singleton.doSomething();
+    return 0;
+}
+```
+
+В этом примере используется `std::call_once` и `std::once_flag` для обеспечения потокобезопасности при инициализации экземпляра `ThreadSafeSingleton`.
+
+## Заключение
+
+Паттерн Синглтон в C++ обеспечивает создание только одного экземпляра класса и предоставляет глобальную точку доступа к нему. Это полезно для управления доступом к общим ресурсам. Реализация Синглтона может быть простой или потокобезопасной. Важно учитывать потенциальные недостатки, такие как ограниченная тестируемость и глобальное состояние.

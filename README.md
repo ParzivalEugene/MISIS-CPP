@@ -8,7 +8,7 @@
 - [x] PIMPL
 - [x] RAII
 - [ ] ref-qualifiers for *this
-- [ ] Singleton
+- [x] Singleton
 - [ ] std::bitset
 - [ ] std::forward
 - [ ] std::move
