@@ -1,0 +1,219 @@
+---
+title: Наследование
+description: Описание наследования
+sidebar:
+  order: 17
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components'
+
+# Множественное наследование в C++
+
+<Aside>
+Множественное наследование в C++ позволяет классу наследовать свойства и методы от более чем одного базового класса. Оно используется для создания многофункциональных классов, но требует внимательного управления для предотвращения конфликтов и неопределенностей.
+</Aside>
+
+## Введение
+Множественное наследование позволяет производному классу наследовать от нескольких базовых классов. Это мощная особенность, но она может привести к сложности и потенциальным проблемам, таким как алмазная проблема.
+
+## Пример использования
+```cpp
+#include <iostream>
+
+class Base1 {
+public:
+    void display() {
+        std::cout << "Base1 display" << std::endl;
+    }
+};
+
+class Base2 {
+public:
+    void show() {
+        std::cout << "Base2 show" << std::endl;
+    }
+};
+
+class Derived : public Base1, public Base2 {};
+
+int main() {
+    Derived d;
+    d.display(); // вывод: Base1 display
+    d.show();    // вывод: Base2 show
+    return 0;
+}
+```
+В этом примере класс `Derived` наследует от двух базовых классов `Base1` и `Base2`, и может использовать методы обоих классов.
+
+## Алмазная проблема
+Алмазная проблема возникает, когда два базовых класса имеют общего предка, что приводит к дублированию членов базового класса в производном.
+
+### Пример
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    void display() {
+        std::cout << "Base display" << std::endl;
+    }
+};
+
+class Derived1 : public Base {};
+class Derived2 : public Base {};
+
+class Final : public Derived1, public Derived2 {};
+
+int main() {
+    Final f;
+    // f.display(); // ошибка: неоднозначность вызова
+    return 0;
+}
+```
+
+### Решение: Виртуальное наследование
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    void display() {
+        std::cout << "Base display" << std::endl;
+    }
+};
+
+class Derived1 : public virtual Base {};
+class Derived2 : public virtual Base {};
+
+class Final : public Derived1, public Derived2 {};
+
+int main() {
+    Final f;
+    f.display(); // вывод: Base display
+    return 0;
+}
+```
+Использование виртуального наследования решает проблему, гарантируя, что существует только один экземпляр базового класса.
+
+# Наследование в языке C++
+
+<Aside>
+Наследование в C++ позволяет создавать новые классы на основе существующих, унаследуя их свойства и методы. Оно способствует повторному использованию кода и организационному структурированию программ.
+</Aside>
+
+## Введение
+Наследование — фундаментальная концепция ООП, позволяющая создавать новые классы на основе существующих. Новый класс наследует свойства и методы базового класса, что способствует повторному использованию кода и упрощению поддержки программ.
+
+## Пример использования
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    void display() {
+        std::cout << "Base display" << std::endl;
+    }
+};
+
+class Derived : public Base {
+public:
+    void show() {
+        std::cout << "Derived show" << std::endl;
+    }
+};
+
+int main() {
+    Derived d;
+    d.display(); // вывод: Base display
+    d.show();    // вывод: Derived show
+    return 0;
+}
+```
+Класс `Derived` наследует от класса `Base` и добавляет новый метод `show`.
+
+## Типы наследования
+- **Открытое (public)**: Доступ к базовым членам остается таким же, как в базовом классе.
+- **Закрытое (private)**: Все члены базового класса становятся закрытыми в производном классе.
+- **Защищенное (protected)**: Все члены базового класса становятся защищенными в производном классе.
+
+### Пример
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+class PublicDerived : public Base {
+    // publicVar - публичный
+    // protectedVar - защищенный
+    // privateVar - недоступен
+};
+
+class PrivateDerived : private Base {
+    // publicVar - приватный
+    // protectedVar - приватный
+    // privateVar - недоступен
+};
+
+class ProtectedDerived : protected Base {
+    // publicVar - защищенный
+    // protectedVar - защищенный
+    // privateVar - недоступен
+};
+```
+
+# Наследование: ограничение доступа
+
+<Aside>
+В C++ наследование может быть открытым (public), защищенным (protected) и закрытым (private), что определяет уровень доступа к членам базового класса в производном.
+</Aside>
+
+## Введение
+Ограничение доступа при наследовании определяет, как члены базового класса будут видны в производном классе. Это важный механизм для управления доступом к данным и методам в иерархии классов.
+
+## Открытое наследование
+```cpp
+class Base {
+public:
+    int publicVar;
+protected:
+    int protectedVar;
+private:
+    int privateVar;
+};
+
+class PublicDerived : public Base {
+    // publicVar остается публичным
+    // protectedVar остается защищенным
+    // privateVar недоступен
+};
+```
+
+## Защищенное наследование
+```cpp
+class ProtectedDerived : protected Base {
+    // publicVar становится защищенным
+    // protectedVar остается защищенным
+    // privateVar недоступен
+};
+```
+
+## Закрытое наследование
+```cpp
+class PrivateDerived : private Base {
+    // publicVar становится закрытым
+    // protectedVar становится закрытым
+    // privateVar недоступен
+};
+```
+
+## Резюме
+- **Множественное наследование** позволяет классу наследовать от нескольких базовых классов, но требует управления потенциальными конфликтами.
+- **Наследование в C++** позволяет создавать производные классы на основе базовых, унаследуя их свойства и методы, что способствует повторному использованию кода.
+- **Ограничение доступа** определяет уровень видимости членов базового класса в производном классе: публичное, защищенное и закрытое наследование.
