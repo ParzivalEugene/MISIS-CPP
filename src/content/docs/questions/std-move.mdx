@@ -1,0 +1,98 @@
+---
+title: std::move
+description: Все про std::move
+sidebar:
+  order: 11
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components';
+
+<Aside>
+`std::move` - это функция из стандартной библиотеки C++, которая используется для явного приведения объекта к rvalue-ссылке. Это позволяет функции перемещения (move semantics) захватить ресурсы объекта, избегая затратных копирований.
+</Aside>
+
+## Определение и назначение
+
+`std::move` не перемещает объект, а лишь преобразует lvalue в rvalue, что позволяет вызвать соответствующий конструктор или оператор перемещения.
+
+## Синтаксис
+```cpp
+template <class T>
+typename std::remove_reference<T>::type&& move(T&& t) noexcept;
+```
+- **T**: Тип аргумента, который будет передан.
+- **t**: Ссылка на объект, который необходимо переместить.
+
+## Примеры использования
+
+### Пример 1: Перемещающий конструктор и оператор
+```cpp
+#include <iostream>
+#include <utility>
+
+class MyClass {
+public:
+    MyClass(int size) : data(new int[size]), size(size) {
+        std::cout << "Constructor" << std::endl;
+    }
+
+    // Перемещающий конструктор
+    MyClass(MyClass&& other) noexcept : data(other.data), size(other.size) {
+        other.data = nullptr;
+        other.size = 0;
+        std::cout << "Move Constructor" << std::endl;
+    }
+
+    // Перемещающий оператор присваивания
+    MyClass& operator=(MyClass&& other) noexcept {
+        if (this != &other) {
+            delete[] data;
+            data = other.data;
+            size = other.size;
+            other.data = nullptr;
+            other.size = 0;
+            std::cout << "Move Assignment Operator" << std::endl;
+        }
+        return *this;
+    }
+
+    ~MyClass() {
+        delete[] data;
+    }
+
+private:
+    int* data;
+    int size;
+};
+
+int main() {
+    MyClass a(10);
+    MyClass b = std::move(a);  // вызывает перемещающий конструктор
+    MyClass c(5);
+    c = std::move(b);          // вызывает перемещающий оператор присваивания
+}
+```
+В этом примере класс `MyClass` использует `std::move` для передачи владения ресурсами от одного объекта к другому с помощью перемещающего конструктора и оператора присваивания.
+
+### Пример 2: Перемещение стандартных контейнеров
+```cpp
+#include <iostream>
+#include <vector>
+#include <utility>
+
+int main() {
+    std::vector<int> v1 = {1, 2, 3};
+    std::vector<int> v2 = std::move(v1);
+
+    std::cout << "v1 size: " << v1.size() << std::endl; // вывод: v1 size: 0
+    std::cout << "v2 size: " << v2.size() << std::endl; // вывод: v2 size: 3
+}
+```
+Здесь `std::move` используется для перемещения содержимого одного вектора в другой. После перемещения исходный вектор `v1` будет пустым, а его содержимое будет перемещено в `v2`.
+
+## Резюме
+- `std::move` преобразует lvalue в rvalue, позволяя использовать семантику перемещения.
+- Не выполняет реального перемещения, а только изменяет ссылочный тип.
+- Полезен для оптимизации кода, уменьшая количество копирований и повышая производительность.
+
+Использование `std::move` помогает эффективно управлять ресурсами, минимизируя издержки на копирование объектов и позволяя разработчикам писать более эффективный код.
