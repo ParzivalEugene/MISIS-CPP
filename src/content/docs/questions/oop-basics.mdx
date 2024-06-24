@@ -1,0 +1,213 @@
+---
+title: ООП основы
+description: Основы объектно-ориентированного программирования
+sidebar:
+  order: 24
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components'
+
+<Aside>
+Основные принципы объектно-ориентированного программирования (ООП) включают инкапсуляцию, наследование, полиморфизм и абстракцию. Эти принципы помогают организовывать код в виде объектов, которые взаимодействуют друг с другом.
+</Aside>
+
+## Введение
+Объектно-ориентированное программирование (ООП) — это парадигма программирования, основанная на концепции "объектов", которые могут содержать данные и методы для их обработки. Основные принципы ООП включают инкапсуляцию, наследование, полиморфизм и абстракцию.
+
+## Инкапсуляция
+
+### Определение
+Инкапсуляция — это механизм, который объединяет данные и методы, работающие с этими данными, в один объект и скрывает детали реализации от пользователя.
+
+### Пример
+```cpp
+#include <iostream>
+
+class Circle {
+private:
+    double radius;
+
+public:
+    void setRadius(double r) {
+        if (r > 0) {
+            radius = r;
+        }
+    }
+
+    double getRadius() const {
+        return radius;
+    }
+
+    double getArea() const {
+        return 3.14159 * radius * radius;
+    }
+};
+
+int main() {
+    Circle c;
+    c.setRadius(5.0);
+    std::cout << "Radius: " << c.getRadius() << std::endl;
+    std::cout << "Area: " << c.getArea() << std::endl;
+
+    return 0;
+}
+```
+
+### Объяснение
+В этом примере `Circle` инкапсулирует данные (радиус) и методы для их обработки. Доступ к радиусу возможен только через методы `setRadius` и `getRadius`, что обеспечивает контроль над значениями и скрытие реализации.
+
+## Наследование
+
+### Определение
+Наследование — это механизм, позволяющий создавать новый класс на основе существующего. Новый класс наследует свойства и методы базового класса.
+
+### Пример
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    void eat() {
+        std::cout << "Eating..." << std::endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void bark() {
+        std::cout << "Barking..." << std::endl;
+    }
+};
+
+int main() {
+    Dog d;
+    d.eat();
+    d.bark();
+
+    return 0;
+}
+```
+
+### Объяснение
+В этом примере класс `Dog` наследует свойства и методы класса `Animal`. Это позволяет объекту `Dog` использовать метод `eat`, определенный в базовом классе `Animal`.
+
+## Полиморфизм
+
+### Определение
+Полиморфизм — это способность объектов различных классов быть обработанными единообразно. Он позволяет методам работать с объектами базового класса, которые могут быть заменены объектами производных классов.
+
+### Пример
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    virtual void makeSound() const {
+        std::cout << "Some generic animal sound" << std::endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() const override {
+        std::cout << "Bark" << std::endl;
+    }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() const override {
+        std::cout << "Meow" << std::endl;
+    }
+};
+
+void playSound(const Animal& animal) {
+    animal.makeSound();
+}
+
+int main() {
+    Dog dog;
+    Cat cat;
+
+    playSound(dog);
+    playSound(cat);
+
+    return 0;
+}
+```
+
+### Объяснение
+В этом примере метод `playSound` принимает ссылку на базовый класс `Animal`. Благодаря полиморфизму, правильная версия метода `makeSound` вызывается для объектов `Dog` и `Cat`.
+
+## Абстракция
+
+### Определение
+Абстракция — это процесс выделения значимых характеристик объекта и игнорирования незначительных деталей. Она позволяет создавать модели реальных объектов с помощью классов и интерфейсов.
+
+### Пример
+```cpp
+#include <iostream>
+#include <string>
+
+class Shape {
+public:
+    virtual double getArea() const = 0; // чисто виртуальный метод
+    virtual std::string getName() const = 0; // чисто виртуальный метод
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) {}
+
+    double getArea() const override {
+        return 3.14159 * radius * radius;
+    }
+
+    std::string getName() const override {
+        return "Circle";
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    double getArea() const override {
+        return width * height;
+    }
+
+    std::string getName() const override {
+        return "Rectangle";
+    }
+};
+
+void printShapeInfo(const Shape& shape) {
+    std::cout << "Shape: " << shape.getName() << ", Area: " << shape.getArea() << std::endl;
+}
+
+int main() {
+    Circle circle(5.0);
+    Rectangle rectangle(4.0, 6.0);
+
+    printShapeInfo(circle);
+    printShapeInfo(rectangle);
+
+    return 0;
+}
+```
+
+### Объяснение
+В этом примере класс `Shape` является абстрактным классом с чисто виртуальными методами. Классы `Circle` и `Rectangle` реализуют эти методы, предоставляя конкретную реализацию для каждой фигуры.
+
+## Резюме
+
+- **Инкапсуляция** объединяет данные и методы в один объект, скрывая детали реализации.
+- **Наследование** позволяет создавать новый класс на основе существующего, наследуя его свойства и методы.
+- **Полиморфизм** обеспечивает единообразную работу с объектами базового класса и их производными.
+- **Абстракция** выделяет значимые характеристики объекта, позволяя создавать модели реальных объектов.

@@ -1,0 +1,136 @@
+---
+title: Замеры времени
+description: Как измерить время выполнения программы
+sidebar:
+  order: 28
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components'
+
+<Aside>
+Для замеров времени в C++ используется библиотека `<chrono>`, которая предоставляет удобные инструменты для измерения времени выполнения кода.
+</Aside>
+
+## Введение
+Измерение времени выполнения кода является важной задачей при оптимизации и анализе производительности программ. В C++ стандартная библиотека `<chrono>` предоставляет мощные и удобные средства для замеров времени.
+
+## Библиотека `<chrono>`
+
+### Основные компоненты `<chrono>`
+- **`std::chrono::steady_clock`**: монотонные часы, которые не могут быть изменены.
+- **`std::chrono::system_clock`**: часы, представляющие системное время.
+- **`std::chrono::high_resolution_clock`**: высокоточные часы (может быть алиасом для `steady_clock` или `system_clock`).
+
+### Типы времени
+- **`std::chrono::duration`**: длительность времени.
+- **`std::chrono::time_point`**: точка во времени.
+
+## Пример замеров времени
+
+### Измерение времени выполнения функции
+Для измерения времени выполнения блока кода можно использовать `std::chrono::high_resolution_clock`.
+
+### Пример
+```cpp
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+void someFunction() {
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // имитация длительной операции
+}
+
+int main() {
+    auto start = std::chrono::high_resolution_clock::now(); // начало замера
+
+    someFunction(); // вызов функции
+
+    auto end = std::chrono::high_resolution_clock::now(); // конец замера
+    std::chrono::duration<double> duration = end - start; // вычисление длительности
+
+    std::cout << "Time taken by function: " << duration.count() << " seconds" << std::endl;
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Time taken by function: 1.00001 seconds
+```
+В этом примере `std::chrono::high_resolution_clock` используется для замера времени выполнения функции `someFunction`.
+
+## Измерение временных интервалов
+
+### Измерение промежуточных интервалов
+Иногда необходимо измерить временные интервалы между несколькими событиями в программе.
+
+### Пример
+```cpp
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+int main() {
+    auto start = std::chrono::high_resolution_clock::now(); // начало замера
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500)); // событие 1
+
+    auto mid = std::chrono::high_resolution_clock::now(); // промежуточный замер
+    std::chrono::duration<double, std::milli> interval1 = mid - start;
+    std::cout << "Interval 1: " << interval1.count() << " ms" << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(700)); // событие 2
+
+    auto end = std::chrono::high_resolution_clock::now(); // конец замера
+    std::chrono::duration<double, std::milli> interval2 = end - mid;
+    std::cout << "Interval 2: " << interval2.count() << " ms" << std::endl;
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Interval 1: 500.001 ms
+Interval 2: 700.002 ms
+```
+В этом примере измеряются два временных интервала между тремя событиями.
+
+## Высокоточные замеры
+
+### Использование `std::chrono::steady_clock`
+Для высокоточных замеров времени, устойчивых к изменениям системного времени, рекомендуется использовать `std::chrono::steady_clock`.
+
+### Пример
+```cpp
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+int main() {
+    auto start = std::chrono::steady_clock::now(); // начало замера
+
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // имитация длительной операции
+
+    auto end = std::chrono::steady_clock::now(); // конец замера
+    std::chrono::duration<double> duration = end - start; // вычисление длительности
+
+    std::cout << "Time taken by operation: " << duration.count() << " seconds" << std::endl;
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Time taken by operation: 1.00001 seconds
+```
+В этом примере `std::chrono::steady_clock` используется для измерения времени выполнения операции.
+
+## Резюме
+
+- **`std::chrono`** предоставляет мощные и удобные средства для измерения времени в C++.
+- **`std::chrono::high_resolution_clock`** и **`std::chrono::steady_clock`** часто используются для замеров времени выполнения кода.
+- Измерение времени выполнения позволяет анализировать производительность и оптимизировать код.
+- **Примеры**: измерение времени выполнения функции, измерение временных интервалов между событиями, использование высокоточных часов.
