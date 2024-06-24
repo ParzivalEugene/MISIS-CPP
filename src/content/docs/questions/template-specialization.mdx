@@ -1,0 +1,173 @@
+---
+title: Шаблоны и специализация
+description: Шаблоны и специализация
+sidebar:
+  order: 27
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components'
+
+<Aside>
+Шаблоны в C++ позволяют создавать универсальные функции и классы, работающие с любыми типами данных. Специализация шаблонов позволяет создавать особые реализации для конкретных типов.
+</Aside>
+
+## Введение
+Шаблоны в C++ предоставляют мощный механизм для написания универсального кода, который может работать с различными типами данных. Специализация шаблонов позволяет адаптировать шаблонный код для конкретных типов, предоставляя специализированные реализации.
+
+## Шаблоны
+
+### Функции-шаблоны
+Функции-шаблоны позволяют писать универсальные функции, которые могут принимать аргументы любого типа. 
+
+### Пример функции-шаблона
+```cpp
+#include <iostream>
+
+template <typename T>
+T add(T a, T b) {
+    return a + b;
+}
+
+int main() {
+    std::cout << "Int: " << add(1, 2) << std::endl;
+    std::cout << "Double: " << add(1.5, 2.5) << std::endl;
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Int: 3
+Double: 4
+```
+В этом примере функция `add` является шаблоном, который может работать как с целыми числами, так и с числами с плавающей запятой.
+
+### Классы-шаблоны
+Классы-шаблоны позволяют создавать классы, которые могут работать с различными типами данных.
+
+### Пример класса-шаблона
+```cpp
+#include <iostream>
+
+template <typename T>
+class Pair {
+private:
+    T first, second;
+
+public:
+    Pair(T a, T b) : first(a), second(b) {}
+
+    T getFirst() const { return first; }
+    T getSecond() const { return second; }
+};
+
+int main() {
+    Pair<int> intPair(1, 2);
+    Pair<double> doublePair(1.5, 2.5);
+
+    std::cout << "Int Pair: (" << intPair.getFirst() << ", " << intPair.getSecond() << ")" << std::endl;
+    std::cout << "Double Pair: (" << doublePair.getFirst() << ", " << doublePair.getSecond() << ")" << std::endl;
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Int Pair: (1, 2)
+Double Pair: (1.5, 2.5)
+```
+В этом примере класс `Pair` является шаблоном, который может хранить пары значений различных типов.
+
+## Специализация шаблонов
+
+### Полная специализация
+Полная специализация позволяет определить реализацию шаблона для конкретного типа.
+
+### Пример полной специализации
+```cpp
+#include <iostream>
+
+template <typename T>
+class MyClass {
+public:
+    void print() {
+        std::cout << "Generic template" << std::endl;
+    }
+};
+
+template <>
+class MyClass<int> {
+public:
+    void print() {
+        std::cout << "Specialized template for int" << std::endl;
+    }
+};
+
+int main() {
+    MyClass<double> obj1;
+    MyClass<int> obj2;
+
+    obj1.print();
+    obj2.print();
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Generic template
+Specialized template for int
+```
+В этом примере `MyClass` имеет общую реализацию и специализированную реализацию для типа `int`.
+
+### Частичная специализация
+Частичная специализация позволяет определить реализацию шаблона для частично конкретизированных типов.
+
+### Пример частичной специализации
+```cpp
+#include <iostream>
+
+template <typename T1, typename T2>
+class MyClass {
+public:
+    void print() {
+        std::cout << "Generic template" << std::endl;
+    }
+};
+
+template <typename T>
+class MyClass<T, int> {
+public:
+    void print() {
+        std::cout << "Partially specialized template for second type int" << std::endl;
+    }
+};
+
+int main() {
+    MyClass<double, double> obj1;
+    MyClass<double, int> obj2;
+
+    obj1.print();
+    obj2.print();
+
+    return 0;
+}
+```
+
+### Вывод
+```
+Generic template
+Partially specialized template for second type int
+```
+В этом примере `MyClass` имеет общую реализацию и частично специализированную реализацию, когда второй параметр является `int`.
+
+## Резюме
+
+- **Шаблоны** позволяют создавать универсальные функции и классы, работающие с различными типами данных.
+- **Функции-шаблоны** позволяют писать функции, принимающие аргументы любого типа.
+- **Классы-шаблоны** позволяют создавать классы, которые могут работать с различными типами данных.
+- **Полная специализация** позволяет определить реализацию шаблона для конкретного типа.
+- **Частичная специализация** позволяет определить реализацию шаблона для частично конкретизированных типов.
