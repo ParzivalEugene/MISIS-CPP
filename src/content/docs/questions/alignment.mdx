@@ -1,0 +1,170 @@
+---
+title: Выравнивание
+description: Описание выравнивания данных
+sidebar:
+  order: 33
+---
+
+import { Aside, Tab, Tabs } from '@astrojs/starlight/components'
+
+<Aside>
+Выравнивание (Alignment) — это расположение данных в памяти с учетом требований архитектуры процессора. Правильное выравнивание может существенно влиять на производительность программы и корректность ее выполнения.
+</Aside>
+
+## Основные идеи выравнивания
+
+### Что такое выравнивание?
+
+Выравнивание — это процесс размещения данных в памяти по адресам, кратным определенному числу, которое зависит от типа данных. Например, для 4-байтового типа данных, таких как `int`, адрес должен быть кратен 4. 
+
+### Почему выравнивание важно?
+
+- **Производительность**: Невыровненные данные могут привести к снижению производительности, так как процессору может потребоваться больше операций для их чтения или записи.
+- **Корректность**: Некоторые архитектуры процессоров могут вызывать ошибки при доступе к невыровненным данным.
+
+## Примеры выравнивания
+
+### Простые типы данных
+
+Для простых типов данных, таких как `int`, `float`, `double`, компилятор автоматически выравнивает данные:
+
+```cpp
+#include <iostream>
+
+struct Example {
+    char a;
+    int b;
+    double c;
+};
+
+int main() {
+    std::cout << "Alignment of char: " << alignof(char) << std::endl;
+    std::cout << "Alignment of int: " << alignof(int) << std::endl;
+    std::cout << "Alignment of double: " << alignof(double) << std::endl;
+    std::cout << "Alignment of struct Example: " << alignof(Example) << std::endl;
+
+    return 0;
+}
+```
+
+**Вывод:**
+
+```
+Alignment of char: 1
+Alignment of int: 4
+Alignment of double: 8
+Alignment of struct Example: 8
+```
+
+### Пользовательские структуры
+
+В пользовательских структурах данные выравниваются по самому большому элементу:
+
+```cpp
+#include <iostream>
+
+struct Example {
+    char a;    // 1 байт
+    int b;     // 4 байта
+    double c;  // 8 байт
+};
+
+int main() {
+    std::cout << "Size of struct Example: " << sizeof(Example) << std::endl;
+    std::cout << "Offset of a: " << offsetof(Example, a) << std::endl;
+    std::cout << "Offset of b: " << offsetof(Example, b) << std::endl;
+    std::cout << "Offset of c: " << offsetof(Example, c) << std::endl;
+
+    return 0;
+}
+```
+
+**Вывод:**
+
+```
+Size of struct Example: 16
+Offset of a: 0
+Offset of b: 4
+Offset of c: 8
+```
+
+### Упаковка данных
+
+Для уменьшения размера структуры можно использовать директивы упаковки, но это может привести к снижению производительности и проблемам с доступом к данным:
+
+```cpp
+#include <iostream>
+#pragma pack(push, 1)
+
+struct PackedExample {
+    char a;
+    int b;
+    double c;
+};
+
+#pragma pack(pop)
+
+int main() {
+    std::cout << "Size of packed struct PackedExample: " << sizeof(PackedExample) << std::endl;
+    std::cout << "Offset of a: " << offsetof(PackedExample, a) << std::endl;
+    std::cout << "Offset of b: " << offsetof(PackedExample, b) << std::endl;
+    std::cout << "Offset of c: " << offsetof(PackedExample, c) << std::endl;
+
+    return 0;
+}
+```
+
+**Вывод:**
+
+```
+Size of packed struct PackedExample: 13
+Offset of a: 0
+Offset of b: 1
+Offset of c: 5
+```
+
+### alignas и alignof
+
+В C++11 и выше можно использовать ключевое слово `alignas` для установки выравнивания и `alignof` для получения текущего выравнивания:
+
+```cpp
+#include <iostream>
+#include <cstddef>
+
+struct AlignedExample {
+    char a;
+    alignas(16) int b;
+    double c;
+};
+
+int main() {
+    std::cout << "Alignment of AlignedExample: " << alignof(AlignedExample) << std::endl;
+    std::cout << "Size of AlignedExample: " << sizeof(AlignedExample) << std::endl;
+    std::cout << "Offset of a: " << offsetof(AlignedExample, a) << std::endl;
+    std::cout << "Offset of b: " << offsetof(AlignedExample, b) << std::endl;
+    std::cout << "Offset of c: " << offsetof(AlignedExample, c) << std::endl;
+
+    return 0;
+}
+```
+
+**Вывод:**
+
+```
+Alignment of AlignedExample: 16
+Size of AlignedExample: 32
+Offset of a: 0
+Offset of b: 16
+Offset of c: 20
+```
+
+В этом примере `int b` выровнен по 16 байтам, что может быть полезно для оптимизации производительности на некоторых архитектурах.
+
+## Резюме
+
+- **Выравнивание** — это процесс размещения данных в памяти по адресам, кратным определенному числу.
+- **Производительность и корректность**: Неправильное выравнивание может снизить производительность и вызвать ошибки на некоторых процессорах.
+- **Простые типы данных**: Компилятор автоматически выравнивает простые типы данных.
+- **Структуры**: В структурах данные выравниваются по самому большому элементу.
+- **Упаковка данных**: Директивы упаковки могут уменьшить размер структуры, но снизить производительность.
+- **alignas и alignof**: Ключевые слова `alignas` и `alignof` предоставляют разработчику контроль над выравниванием данных в C++11 и выше.
